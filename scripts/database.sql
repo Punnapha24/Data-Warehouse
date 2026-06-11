@@ -101,76 +101,134 @@ create table bronze.erp_px_cat_g1v2(
 );
 go
 
--- Make table empty
-truncate table bronze.crm_cust_info;
+create or alter procedure bronze.load_bronze as
+begin
+	declare @Start_Time datetime, @End_Time datetime;
+	begin try
+		print 'Loading data into bronze layer';
 
--- insert data into the table
-bulk insert bronze.crm_cust_info
-from 'C:\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
-with (
-	firstrow = 2,
-	fieldterminator = ',',
-	tablock -- lock the table during the bulk insert operation for improved performance
-);
+		print '-------------------------------------------------';
 
-select count(*) from bronze.crm_cust_info;
 
-truncate table bronze.crm_prd_info;
+		print '----- LOADING DATA FROM CRM -----';
 
-bulk insert bronze.crm_prd_info
-from 'C:\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
-with(
-	firstrow = 2,
-	fieldterminator = ',',
-	tablock
-);
+		-- Make table empty
+		print 'Truncating bronze.crm_cust_info';
+		truncate table bronze.crm_cust_info;
 
-select * from bronze.crm_prd_info;
+		-- insert data into the table
+		print 'Inserting data into bronze.crm_cust_info';
+		set @Start_Time = GETDATE();
+		
+		bulk insert bronze.crm_cust_info
+		from 'C:\Users\Nunu\Desktop\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
+		with (
+			firstrow = 2,
+			fieldterminator = ',',
+			tablock -- lock the table during the bulk insert operation for improved performance
+		);
 
-truncate table bronze.crm_sales;
+		set @End_Time = GETDATE();
+		print 'Load Duration for bronze.crm_cust_info: ' + CAST(DATEDIFF(SECOND, @Start_Time, @End_Time) AS NVARCHAR) + ' seconds';
+		print '-------------------------------------------------';
 
-bulk insert bronze.crm_sales
-from 'C:\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
-with(
-	firstrow = 2,
-	fieldterminator = ',',
-	tablock
-);
+		print 'Truncating bronze.crm_prd_info';
+		truncate table bronze.crm_prd_info;
+		
+		print 'Inserting data into bronze.crm_prd_info';
+		set @Start_Time = GETDATE();
 
-select * from bronze.crm_sales;
+		bulk insert bronze.crm_prd_info
+		from 'C:\Users\Nunu\Desktop\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
+		with(
+			firstrow = 2,
+			fieldterminator = ',',
+			tablock
+		);
 
-truncate table bronze.erp_cust_az12;
+		set @End_Time = GETDATE();
+		print 'Load Duration for bronze.crm_prd_info: ' + CAST(DATEDIFF(SECOND, @Start_Time, @End_Time) AS NVARCHAR) + ' seconds';
+		print '-------------------------------------------------';
 
-bulk insert bronze.erp_cust_az12
-from 'C:\sql-data-warehouse-project\datasets\source_erp\cust_az12.csv'
-with(
-	firstrow = 2,
-	fieldterminator = ',',
-	tablock
-);
+		print 'Truncating bronze.crm_sales';
+		truncate table bronze.crm_sales;
 
-select * from bronze.erp_cust_az12;
+		print 'Inserting data into bronze.crm_sales';
+		set @Start_Time = GETDATE();
 
-truncate table bronze.erp_loc_a101;
+		bulk insert bronze.crm_sales
+		from 'C:\Users\Nunu\Desktop\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
+		with(
+			firstrow = 2,
+			fieldterminator = ',',
+			tablock
+		);
 
-bulk insert bronze.erp_loc_a101
-from 'C:\sql-data-warehouse-project\datasets\source_erp\loc_a101.csv'
-with(
-	firstrow = 2,
-	fieldterminator = ',',
-	tablock
-);
+		set @End_Time = GETDATE();
+		print 'Load Duration for bronze.crm_sales: ' + CAST(DATEDIFF(SECOND, @Start_Time, @End_Time) AS NVARCHAR) + ' seconds';
+		print '-------------------------------------------------';
 
-select * from bronze.erp_loc_a101;
+		print '----- LOADING DATA FROM ERP -----';
 
-truncate table bronze.erp_px_cat_g1v2;
+		print 'Truncating bronze.erp_cust_az12';
+		truncate table bronze.erp_cust_az12;
 
-bulk insert bronze.erp_px_cat_g1v2
-from 'C:\sql-data-warehouse-project\datasets\source_erp\px_cat_g1v2.csv'
-with(
-	firstrow = 2,
-	fieldterminator = ',',
-	tablock
-);
+		print 'Inserting data into bronze.erp_cust_az12';
+		set @Start_Time = GETDATE();
 
-select * from bronze.erp_px_cat_g1v2; 
+		bulk insert bronze.erp_cust_az12
+		from 'C:\Users\Nunu\Desktop\sql-data-warehouse-project\datasets\source_erp\cust_az12.csv'
+		with(
+			firstrow = 2,
+			fieldterminator = ',',
+			tablock
+		);
+
+		set @End_Time = GETDATE();
+		print 'Load Duration for bronze.erp_cust_az12: ' + CAST(DATEDIFF(SECOND, @Start_Time, @End_Time) AS NVARCHAR) + ' seconds';
+		print '-------------------------------------------------';
+
+		print 'Truncating bronze.erp_loc_a101';
+		truncate table bronze.erp_loc_a101;
+
+		print 'Inserting data into bronze.erp_loc_a101';
+		set @Start_Time = GETDATE();
+
+		bulk insert bronze.erp_loc_a101
+		from 'C:\Users\Nunu\Desktop\sql-data-warehouse-project\datasets\source_erp\loc_a101.csv'
+		with(
+			firstrow = 2,
+			fieldterminator = ',',
+			tablock
+		);
+
+		set @End_Time = GETDATE();
+		print 'Load Duration for bronze.erp_loc_a101: ' + CAST(DATEDIFF(SECOND, @Start_Time, @End_Time) AS NVARCHAR) + ' seconds';
+		print '-------------------------------------------------';
+
+		print 'Truncating bronze.erp_px_cat_g1v2';
+		truncate table bronze.erp_px_cat_g1v2;
+
+		print 'Inserting data into bronze.erp_px_cat_g1v2';
+		set @Start_Time = GETDATE();
+
+		bulk insert bronze.erp_px_cat_g1v2
+		from 'C:\Users\Nunu\Desktop\sql-data-warehouse-project\datasets\source_erp\px_cat_g1v2.csv'
+		with(
+			firstrow = 2,
+			fieldterminator = ',',
+			tablock
+		);
+
+		set @End_Time = GETDATE();
+		print 'Load Duration for bronze.erp_px_cat_g1v2: ' + CAST(DATEDIFF(SECOND, @Start_Time, @End_Time) AS NVARCHAR) + ' seconds';
+		print '-------------------------------------------------';
+
+	end try
+	begin catch
+		print 'Error occurred while loading data into bronze layer: ' + ERROR_MESSAGE();
+		print 'Error Message' + CAST(ERROR_NUMBER() AS NVARCHAR);
+		print 'Error Message' + CAST(ERROR_STATE() AS NVARCHAR);
+	end catch 
+end  
+
