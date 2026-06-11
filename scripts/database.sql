@@ -100,3 +100,77 @@ create table bronze.erp_px_cat_g1v2(
 	maintenance varchar(10)
 );
 go
+
+-- Make table empty
+truncate table bronze.crm_cust_info;
+
+-- insert data into the table
+bulk insert bronze.crm_cust_info
+from 'C:\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
+with (
+	firstrow = 2,
+	fieldterminator = ',',
+	tablock -- lock the table during the bulk insert operation for improved performance
+);
+
+select count(*) from bronze.crm_cust_info;
+
+truncate table bronze.crm_prd_info;
+
+bulk insert bronze.crm_prd_info
+from 'C:\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
+with(
+	firstrow = 2,
+	fieldterminator = ',',
+	tablock
+);
+
+select * from bronze.crm_prd_info;
+
+truncate table bronze.crm_sales;
+
+bulk insert bronze.crm_sales
+from 'C:\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
+with(
+	firstrow = 2,
+	fieldterminator = ',',
+	tablock
+);
+
+select * from bronze.crm_sales;
+
+truncate table bronze.erp_cust_az12;
+
+bulk insert bronze.erp_cust_az12
+from 'C:\sql-data-warehouse-project\datasets\source_erp\cust_az12.csv'
+with(
+	firstrow = 2,
+	fieldterminator = ',',
+	tablock
+);
+
+select * from bronze.erp_cust_az12;
+
+truncate table bronze.erp_loc_a101;
+
+bulk insert bronze.erp_loc_a101
+from 'C:\sql-data-warehouse-project\datasets\source_erp\loc_a101.csv'
+with(
+	firstrow = 2,
+	fieldterminator = ',',
+	tablock
+);
+
+select * from bronze.erp_loc_a101;
+
+truncate table bronze.erp_px_cat_g1v2;
+
+bulk insert bronze.erp_px_cat_g1v2
+from 'C:\sql-data-warehouse-project\datasets\source_erp\px_cat_g1v2.csv'
+with(
+	firstrow = 2,
+	fieldterminator = ',',
+	tablock
+);
+
+select * from bronze.erp_px_cat_g1v2; 
